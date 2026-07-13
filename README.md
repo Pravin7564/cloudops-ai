@@ -42,3 +42,5 @@ CloudOps AI is an AI-powered cloud engineering assistant designed to reduce infr
 
 Reduce Kubernetes troubleshooting from 45 minutes to under 5 minutes.
       
+## Environment
+Development Environment: GitHub Codespaces
