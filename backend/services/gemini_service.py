@@ -19,20 +19,25 @@ class GeminiService:
         """
         Analyze an infrastructure log using Gemini
         """
-        prompt= f"""
-You are an experienced DevOps engineer.
 
-Analyze the following infrastructure log.RuntimeError
+        prompt = f"""
+    You are an experienced DevOps engineer.
 
-Return:
-- Root Cause
-- Severity 
-- Recommanded Fix
-- Recommanded Commands
+    Analyze the following infrastructure log.
 
-Log:
-{log}
-"""
-        
-        response = self.model.generate_content(prompt)
-        return response.text
+    Return:
+    - Root Cause
+    - Severity
+    - Recommended Fix
+    - Recommended Commands
+
+    Log:
+    {log}
+    """
+
+        try:
+            response = self.model.generate_content(prompt)
+            return response.text
+
+        except Exception as e:
+            return f"AI Service Error: {str(e)}"

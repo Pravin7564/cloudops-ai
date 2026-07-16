@@ -89,7 +89,12 @@ class LogAnalyzer:
         #Unknon Issue -> Ask Gemini API
 
         ai_response = self.gemini.analyze(cleaned_log)
-
+        if ai_response.startswith("AI Service Error"):
+            return{
+                "status": "Error",
+                "source": "Gemini AI",
+                "message": ai_response
+            }
         return {
             "status": "success",
             "Source": "Gemini AI",
