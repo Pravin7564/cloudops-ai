@@ -15,9 +15,19 @@ This module DOES NOT:
     - Call AI providers directly.
     - Print reports.
     - Save data.
+
+New Comments
+Cloudops API - Log Analyzer
+
+This service :
+1. Validates the log
+2. Checks from Kubernetes rules
+3. If no rule matches , asks Gemini AI.    
 """
 
 from backend.rules.kubernetes_rules import KUBERNETES_RULES
+from backend.services.gemini_service import GeminiService
+
 class LogAnalyzer:
     """
     Coordinates infrastructure log analysis.
@@ -27,7 +37,7 @@ class LogAnalyzer:
         """
         Initialize the analyzer.
         """
-        self.analysis_result = {}
+        self.gemini = GeminiService()
 
     def validate_log(self, log_text: str) -> bool:
         """
@@ -50,7 +60,7 @@ class LogAnalyzer:
         """
         return log_text.strip()
 
-    def analyze(self, log_text: str) -> dict:
+    def analyze(self, log_text: str):
         """
         Analyze Kubernetes logs using rule matching.
         """
@@ -69,18 +79,19 @@ class LogAnalyzer:
 
                 return {
                     "status": "success",
+                    "Source": "Rule Engine",
                     "technology": "Kubernetes",
                     "matched_rule": keyword,
                     "root_cause": rule["root_cause"],
                     "severity": rule["severity"],
                     "confidence": rule["confidence"]
                 }
+        #Unknon Issue -> Ask Gemini API
+
+        ai_response = self.gemini.analyze(cleaned_log)
 
         return {
             "status": "success",
-            "technology": "Kubernetes",
-            "matched_rule": None,
-            "root_cause": "Unknown issue.",
-            "severity": "Unknown",
-            "confidence": 0
+            "Source": "Gemini AI",
+            "Analysis": ai_response
         }
