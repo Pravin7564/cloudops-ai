@@ -1,29 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CloudOps AI</title>
-<link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudOps AI</title>
+
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+
 <div class="container">
-<h1>☁️ CloudOps AI</h1>
-<p class="subtitle">
-       Paste your Kubernetes log below and let AI analyze it.
-</p>
-<textarea
-       id="logInput"
-       placeholder="Paste Kubernetes log here..."
-></textarea>
-<button onclick="analyzeLog()">
-       Analyze Log
-</button>
-<div id="loading">
-       Analyzing...
+
+    <header>
+        <h1>☁️ CloudOps AI</h1>
+        <p class="subtitle">
+            AI Powered Kubernetes Log Analysis
+        </p>
+    </header>
+
+    <div class="input-card">
+
+        <label for="logInput">
+            Kubernetes Logs
+        </label>
+
+        <textarea
+            id="logInput"
+            placeholder="Paste Kubernetes logs here..."
+        ></textarea>
+
+        <button id="analyzeBtn">
+            Analyze Logs
+        </button>
+
+    </div>
+
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing logs...</p>
+    </div>
+
+    <div id="reportContainer" class="report hidden">
+
+        <h2>Analysis Report</h2>
+
+        <div class="report-grid">
+
+            <div class="card">
+                <h3>Source</h3>
+                <p id="source">-</p>
+            </div>
+
+            <div class="card">
+                <h3>Severity</h3>
+                <span id="severity" class="badge">Unknown</span>
+            </div>
+
+            <div class="card full-width">
+                <h3>Root Cause</h3>
+                <p id="rootCause">-</p>
+            </div>
+
+            <div class="card full-width">
+                <h3>Explanation</h3>
+                <p id="explanation">-</p>
+            </div>
+
+            <div class="card full-width">
+                <h3>Recommendations</h3>
+                <ul id="recommendations"></ul>
+            </div>
+
+            <div class="card full-width">
+                <h3>Suggested Commands</h3>
+                <pre id="commands"></pre>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="errorMessage" class="error hidden"></div>
+
 </div>
-<div id="result"></div>
-</div>
+
 <script src="/static/script.js"></script>
+
 </body>
 </html>
