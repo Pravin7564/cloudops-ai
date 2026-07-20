@@ -82,9 +82,7 @@ class LogAnalyzer:
                     "Source": "Rule Engine",
                     "technology": "Kubernetes",
                     "matched_rule": keyword,
-                    "root_cause": rule["root_cause"],
-                    "severity": rule["severity"],
-                    "confidence": rule["confidence"]
+                    **rule
                 }
         #Unknon Issue -> Ask Gemini API
 

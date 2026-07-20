@@ -77,6 +77,9 @@ async function analyzeLog() {
 
 function renderReport(data) {
 
+    document.getElementById("confidence").textContent =
+    data.confidence || "AI Generated";
+
     document.getElementById("reportContainer")
         .classList.remove("hidden");
 
@@ -116,32 +119,29 @@ function renderReport(data) {
         data.root_cause || "Not Available";
 
     document.getElementById("explanation").textContent =
+        data.explanation ||
         data.Analysis ||
-        "Rule Engine matched a known Kubernetes issue.";
+        "No explanation available.";
 
     const recommendationList =
         document.getElementById("recommendations");
 
     recommendationList.innerHTML = "";
 
-    if (data.root_cause) {
+    if (data.recommendations) {
 
-        addRecommendation("Investigate the reported root cause.");
+        data.recommendations.forEach(item => {
 
-        addRecommendation("Check Kubernetes events.");
+            addRecommendation(item);
 
-        addRecommendation("Verify Pod status.");
+        });
 
     }
 
     document.getElementById("commands").textContent =
-`kubectl describe pod <pod-name>
-
-kubectl get events
-
-kubectl get pods -A
-
-kubectl logs <pod-name>`;
+    data.commands
+        ? data.commands.join("\n")
+        : "";
 }
 
 function addRecommendation(text) {
