@@ -1,0 +1,20 @@
+#v0.5.0 - Browser MVP complete
+
+##Added 
+- Professional analysis report UI
+- Confidence Scrore card
+- AI provider abstraction Layer
+- Client-side file upload
+- File Upload status
+- File size display
+- Clear file functionality
+
+##Improved
+- Better report rendering
+- Improved UI responsiveness
+- Better code organization
+
+##Fixed
+- Browser cache issue during the development
+- File upload event handling
+- UI rendering improvements
