@@ -26,7 +26,8 @@ This service :
 """
 
 from backend.rules.kubernetes_rules import KUBERNETES_RULES
-from backend.services.gemini_service import GeminiService
+#from backend.services.gemini_service import GeminiService
+from backend.services.ai_service import AIService
 
 class LogAnalyzer:
     """
@@ -37,7 +38,8 @@ class LogAnalyzer:
         """
         Initialize the analyzer.
         """
-        self.gemini = GeminiService()
+        #self.gemini = GeminiService()
+        self.ai_service = AIService()
 
     def validate_log(self, log_text: str) -> bool:
         """
@@ -86,7 +88,8 @@ class LogAnalyzer:
                 }
         #Unknon Issue -> Ask Gemini API
 
-        ai_response = self.gemini.analyze(cleaned_log)
+        #ai_response = self.gemini.analyze(cleaned_log)
+        ai_response = self.ai_service.anlyze(cleaned_log)
         if ai_response.startswith("AI Service Error"):
             return{
                 "status": "Error",
