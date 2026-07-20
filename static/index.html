@@ -29,6 +29,32 @@
             placeholder="Paste Kubernetes logs here..."
         ></textarea>
 
+        <div class="upload-section">
+
+            <p class ="upload-divider">
+                OR
+            </p>
+
+            <input
+                type="file"
+                id="logFile"
+                accept=".log,.txt,.yaml,.yml"
+            >
+
+            <p id="selectedFile" class="selected-file">
+                No file selected
+            </p>
+
+            <button
+                id="clearFileBtn"
+                class="secondary-btn"
+                type="button">
+                Clear
+            </button>
+
+                 
+        </div>
+
         <button id="analyzeBtn">
             Analyze Logs
         </button>

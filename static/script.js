@@ -1,6 +1,15 @@
-console.log("CloudOps AI script loaded");
+alert("Script version 2");
+console.log("CloudOps AI script loaded version 2");
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM Loaded");
+    document
+        .getElementById("clearFileBtn")
+        .addEventListener("click", clearFile);
+
+    document
+        .getElementById("logFile")
+        .addEventListener("change", loadFile);
+        
     document
         .getElementById("analyzeBtn")
         .addEventListener("click", () => {
@@ -8,6 +17,58 @@ document.addEventListener("DOMContentLoaded", () => {
             analyzeLog();
             });
 });
+
+
+function loadFile(event){
+
+    console.log("loadfile() called")
+    const file = event.target.files[0];
+
+    if(!file){
+        return;
+    }
+
+    let size = file.size;
+
+    let displaySize;
+
+    if(size < 1024) {
+        displaySize = size + "Bytes";
+    }
+
+    else if(size < 1024 * 1024){
+        displaySize = (size / 1024).toFixed(1) + "KB";
+    }
+
+    else{
+
+        displaySize = (size / (1024 * 1024)).toFixed(2) + "MB";
+    }
+
+    document.getElementById("selectedFile").innerHTML =
+    "📄 <b> " + file.name + "</b><br>" +
+    displaySize + "<br>" +
+    "✅ Ready for analysis";
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        document.getElementById("logInput").value = 
+        e.target.result;
+    };
+    reader.readAsText(file);
+}
+
+function clearFile(){
+
+    document.getElementById("logFile").value = "";
+
+    document.getElementById("logInput").value = "";
+
+    document.getElementById("selectedFile").textContent = 
+    "No file selected";
+}
 
 async function analyzeLog() {
 
