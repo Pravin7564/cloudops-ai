@@ -10,3 +10,7 @@ __pychache__/
 
 #macOS
 .DS_Store
+
+#SSH Keys
+*.pem
+*.key
