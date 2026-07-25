@@ -1,9 +1,11 @@
 #Environment
 .env 
 
+
 #Python
 __pychache__/
 *.pyc 
+.venv/
 
 #VSCODE
 .vscode/
