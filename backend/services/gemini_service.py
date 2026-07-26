@@ -1,10 +1,13 @@
 """
 Gemini AI servic
-Handles Communication with the Gemini API
+Handles Communication with the Gemini API and converts Gemini
+responses into structured results
+Google SDK migration included
 """
 
 import json
-import google.generativeai as genai
+from google import genai
+
 from backend.config.settings import Settings
 
 class GeminiService:
@@ -13,12 +16,16 @@ class GeminiService:
     """
 
     def __init__(self):
-        genai.configure(api_key=Settings.Gemini_API_KEY)
-        self.model = genai.GenerativeModel("gemini-3.5-flash")
-
-    def analyze(self, log: str) -> str:
+        self.client = genai.Client(
+            api_key=Settings.Gemini_API_KEY
+        )
+       
+    def analyze(self, log: str):
         """
         Analyze an infrastructure log using Gemini
+
+        Returns: 
+          dict: Structured analysis result or Structured error
         """
 
         prompt = f"""
@@ -67,41 +74,29 @@ Log:
 
 {log}
 """
-        #Step1 try gemini
+        #Step1 call gemini
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model = "gemini-3.5-flash",
+                contents = prompt
+            )
             text = response.text.strip()
-            
-            return response.text
-
+          
         except Exception as e:
-            return f"AI Service Error: {str(e)}"
-        
-        #Step 2 - Get response text
+            return {
+                "status": "error",
+                "error_type": "ai_service_error",
+                "message": str(e)
+            }
 
-        text = response.text.strip()
-
-        #Step 3 - Convert json text into python dictionary
+        #Step 2 - Convert Gemini JSON response
         try:
             return json.loads(text)
-        
+       
         except json.JSONDecodeError:
             return {
-                "root cause":
-                    "Unable to parse AI response.",
-                
-                "severity":
-                    "Unknown",
-
-                "confidence":
-                    "0%",
-                
-                "explanation":
-                    text,
-                
-                "recommandations":
-                    [],
-                
-                "commands":
-                    []
+                "status": "error",
+                "error_type": "invalid_ai_response",
+                "message": "Gemini returned an invalid JSON response.",
+                "raw_response": text
             }

@@ -106,22 +106,37 @@ async function analyzeLog() {
 
         });
 
-        const data = await response.json();
+        let data;
+
+        try{
+            data = await response.json();
+        } catch(parseError){
+            throw new Error(
+                "The server returned an invalid response."
+            );
+        }
 
         loading.classList.add("hidden");
 
         button.disabled = false;
 
-        if (data.status.toLowerCase() === "error") {
-
-            showError(data.message);
-
+        if(!response.ok){
+            showError(
+                data.message || "The server failed to analyze the log."
+            );
             return;
-
         }
 
+        if(
+            data.status && 
+            data.status.toLowerCase() == "error"
+        ){
+            showError(
+                data.message || "AI service failed to analyze the log."
+            );
+            return;
+        }
         renderReport(data);
-
     }
 
     catch (err) {
@@ -137,9 +152,13 @@ async function analyzeLog() {
 }
 
 function renderReport(data) {
+    //Gemini response contain analysis inside data.analysis.
+    // Rule engine responses contain analysis directly in data.
+    
+    const analysis = data.Analysis || data;
 
     document.getElementById("confidence").textContent =
-    data.confidence || "AI Generated";
+    analysis.confidence || "AI Generated";
 
     document.getElementById("reportContainer")
         .classList.remove("hidden");
@@ -151,7 +170,7 @@ function renderReport(data) {
         document.getElementById("severity");
 
     const severity =
-        data.severity || "Unknown";
+        analysis.severity || "Unknown";
 
     severityBadge.textContent = severity;
 
@@ -177,11 +196,10 @@ function renderReport(data) {
     }
 
     document.getElementById("rootCause").textContent =
-        data.root_cause || "Not Available";
+        analysis.root_cause || "Not Available";
 
     document.getElementById("explanation").textContent =
-        data.explanation ||
-        data.Analysis ||
+        analysis.explanation ||
         "No explanation available.";
 
     const recommendationList =
@@ -189,19 +207,19 @@ function renderReport(data) {
 
     recommendationList.innerHTML = "";
 
-    if (data.recommendations) {
+    if (Array.isArray(analysis.recommendations)){
 
-        data.recommendations.forEach(item => {
+        analysis.recommendations.forEach(item => {
 
             addRecommendation(item);
 
         });
-
+    
     }
 
     document.getElementById("commands").textContent =
-    data.commands
-        ? data.commands.join("\n")
+    Array.isArray(analysis.commands)
+        ? analysis.commands.join("\n")
         : "";
 }
 
