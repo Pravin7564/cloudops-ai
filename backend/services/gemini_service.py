@@ -100,3 +100,142 @@ Log:
                 "message": "Gemini returned an invalid JSON response.",
                 "raw_response": text
             }
+
+    def generate_rule_candidate(self, log: str):
+
+        """
+
+        Ask Gemini to identify whether a Kubernetes log
+
+        can be converted into a reusable local rule.
+
+        """
+
+        prompt = f"""
+
+You are a Senior Kubernetes Site Reliability Engineer (SRE).
+
+Analyze the following Kubernetes log and determine whether
+
+it represents a recognizable Kubernetes issue that can be
+
+converted into a reusable local rule.
+
+Return ONLY valid JSON.
+
+Do not use markdown.
+
+Do not wrap the response in ```.
+
+Do not include explanations outside JSON.
+
+Return this exact schema:
+
+{{
+
+    "pattern": "",
+
+    "root_cause": "",
+
+    "severity": "",
+
+    "confidence": "",
+
+    "explanation": "",
+
+    "recommendations": [
+
+        ""
+
+    ],
+
+    "commands": [
+
+        ""
+
+    ]
+
+}}
+
+Guidelines:
+
+- pattern must be a concise and reusable Kubernetes error
+
+  keyword or phrase.
+
+- severity must be one of:
+
+  High
+
+  Medium
+
+  Low
+
+- confidence must be a percentage like:
+
+  95%
+
+- recommendations must contain 3-5 concise actions.
+
+- commands must contain useful kubectl commands.
+
+- Only generate a candidate for a recognizable Kubernetes issue.
+
+- Do not invent a rule for vague or insufficient logs.
+
+Log:
+
+{log}
+
+"""
+
+        try:
+
+            response = self.client.models.generate_content(
+
+                model="gemini-3.5-flash",
+
+                contents=prompt
+
+            )
+
+            text = response.text.strip()
+
+        except Exception as e:
+
+            return {
+
+                "status": "error",
+
+                "error_type": "ai_service_error",
+
+                "message": str(e)
+
+            }
+
+        try:
+
+            candidate = json.loads(text)
+
+            return {
+
+                "status": "success",
+
+                "rule_candidate": candidate
+
+            }
+
+        except json.JSONDecodeError:
+
+            return {
+
+                "status": "error",
+
+                "error_type": "invalid_ai_response",
+
+                "message": "Gemini returned an invalid rule candidate.",
+
+                "raw_response": text
+
+            }
+ 

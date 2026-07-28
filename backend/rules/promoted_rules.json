@@ -1,0 +1,21 @@
+[
+    {
+        "pattern": "FailedCreatePodSandbox",
+        "root_cause": "Kubernetes failed to create the pod sandbox.",
+        "severity": "High",
+        "confidence": "95%",
+        "explanation": "The kubelet was unable to create the pod sandbox, commonly due to CNI or container runtime issues.",
+        "recommendations": [
+            "Check CNI plugin pod status.",
+            "Inspect kubelet logs.",
+            "Check container runtime status."
+        ],
+        "commands": [
+            "kubectl get pods -n kube-system",
+            "kubectl get events --all-namespaces",
+            "kubectl describe node <node-name>"
+        ],
+        "source": "Test Candidate",
+        "status": "promoted"
+    }
+]

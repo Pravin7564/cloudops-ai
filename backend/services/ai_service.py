@@ -18,3 +18,9 @@ class AIService:
         Analyze a log using configured AI provider.
         """
         return self.provider.analyze(log)
+
+    def generate_rule_candidate(self, log: str):
+        """
+        Generae a reusable kubernetes rule candidate
+        """
+        return self.provider.generate_rule_candidate(log)

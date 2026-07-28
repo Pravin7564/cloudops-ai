@@ -1,0 +1,60 @@
+[
+    {
+        "pattern": "FailedMount",
+        "root_cause": "Kubernetes failed tomount a volume",
+        "severity": "High",
+        "confidence": "95%",
+        "explanation": "The kubelet was unable to mount the required volume for the pod.",
+        "recommendations": [
+            "Check PVC and PV status",
+            "Check volume attachment resources",
+            "Inspect CSI driver logs"
+        ],
+        "commands": [
+            "kubectl describe pod <pod-name>",
+            "kubectl get pvc,pv",
+            "kubectl get volumeattachment"
+        ],
+        "source": "Gemini AI",
+        "status": "approved"
+    },
+    {
+        "pattern": "CNI plugin failed to set up pod network",
+        "root_cause": "The Container Network Interface (CNI) plugin failed to configure the network namespace for the pod, often due to CNI daemon failures, IP address exhaustion, or node-level configuration errors.",
+        "severity": "High",
+        "confidence": "95%",
+        "explanation": "This error occurs when the kubelet attempts to provision a pod sandbox but the CNI plugin is unable to allocate an IP address or set up the network routing interface. This halts pod initialization, leaving the pod stuck in ContainerCreating.",
+        "recommendations": [
+            "Check the status and logs of the CNI DaemonSet pods (e.g., aws-node, calico-node, flannel, cilium) in the kube-system namespace.",
+            "Verify if the subnet or IP Address Management (IPAM) pool has exhausted all available IP addresses.",
+            "Inspect the CNI configuration directory (/etc/cni/net.d/) on the affected node for missing or malformed configuration files.",
+            "Restart the CNI daemon pod running on the affected Kubernetes node to trigger re-initialization."
+        ],
+        "commands": [
+            "kubectl get pods -n kube-system -o wide",
+            "kubectl describe node <affected-node-name>",
+            "kubectl get events --all-namespaces --field-selector reason=FailedCreatePodSandBox"
+        ],
+        "source": "Gemini AI",
+        "status": "rejected"
+    },
+    {
+        "pattern": "FailedCreatePodSandbox",
+        "root_cause": "Kubernetes failed to create the pod sandbox.",
+        "severity": "High",
+        "confidence": "95%",
+        "explanation": "The kubelet was unable to create the pod sandbox, commonly due to CNI or container runtime issues.",
+        "recommendations": [
+            "Check CNI plugin pod status.",
+            "Inspect kubelet logs.",
+            "Check container runtime status."
+        ],
+        "commands": [
+            "kubectl get pods -n kube-system",
+            "kubectl get events --all-namespaces",
+            "kubectl describe node <node-name>"
+        ],
+        "source": "Test Candidate",
+        "status": "approved"
+    }
+]
