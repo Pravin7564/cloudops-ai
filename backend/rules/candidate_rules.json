@@ -36,7 +36,8 @@
             "kubectl get events --all-namespaces --field-selector reason=FailedCreatePodSandBox"
         ],
         "source": "Gemini AI",
-        "status": "rejected"
+        "status": "approved",
+        "approved_at": "2026-07-29T15:43:38.967811+00:00"
     },
     {
         "pattern": "FailedCreatePodSandbox",
